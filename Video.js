@@ -1,18 +1,15 @@
-import React from 'react';
-import ReactNative from 'react-native';
-import VideoResizeMode from './VideoResizeMode.js';
-
-const {
-  Component,
-  PropTypes,
-} = React;
-
-const {
-  StyleSheet,
-  requireNativeComponent,
+/**
+ * @flow
+ */
+import React, { PropTypes } from 'react';
+import {
   NativeModules,
+  requireNativeComponent,
+  StyleSheet,
   View,
-} = ReactNative;
+} from 'react-native';
+
+import VideoResizeMode from './VideoResizeMode.js';
 
 const styles = StyleSheet.create({
   base: {
@@ -20,7 +17,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class Video extends Component {
+export default class Video extends React.Component {
 
   setNativeProps(nativeProps) {
     this._root.setNativeProps(nativeProps);

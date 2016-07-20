@@ -6,17 +6,16 @@ android {
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 22
-        versionCode 1
-        versionName "1.0"
-        ndk {
-            abiFilters "armeabi-v7a", "x86"
-        }
+        targetSdkVersion 23
+        consumerProguardFile 'proguard-rules.pro'
     }
 }
 
 dependencies {
-    compile 'com.facebook.react:react-native:+'
-    compile 'com.devbrackets.android:exomedia:3.0.0'
-    compile 'com.yqritc:android-scalablevideoview:1.0.1'
+    //noinspection GradleDynamicVersion
+    provided 'com.facebook.react:react-native:+' // From node_modules
+
+    compile 'com.google.android.exoplayer:exoplayer:r1.5.9'
+
+    testCompile 'junit:junit:4.12'
 }

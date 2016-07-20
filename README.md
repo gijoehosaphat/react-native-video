@@ -1,5 +1,7 @@
 ## react-native-video
 
+TODO: Update with new setup
+
 A `<Video>` component for react-native, as seen in
 [react-native-login](https://github.com/brentvatne/react-native-login)!
 
