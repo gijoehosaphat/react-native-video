@@ -148,9 +148,9 @@ public class ReactExoplayerView extends AspectRatioFrameLayout implements
 
     public void setSrc(Uri contentUri) {
         if (contentUri != null) {
-            Log.d(TAG, "set src " + contentUri.toString());
             this.contentUri = contentUri;
             this.contentType = inferContentType(contentUri, "");
+            Log.d(TAG, "set src " + contentUri.toString() + " type: " + contentType);
             preparePlayer(true);
         }
     }
@@ -195,6 +195,7 @@ public class ReactExoplayerView extends AspectRatioFrameLayout implements
     }
 
     public void setPlayInBackground(boolean playInBackground) {
+        Log.d(TAG, "setPlayInBackground: " + playInBackground);
         this.enableBackgroundAudio = playInBackground;
     }
 
@@ -202,7 +203,9 @@ public class ReactExoplayerView extends AspectRatioFrameLayout implements
 
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
+        Log.d(TAG, "surfaceCreated");
         if (player != null) {
+            Log.d(TAG, "player set to surface w: " + surfaceView.getWidth() + " h: " + surfaceView.getHeight());
             player.setSurface(surfaceView.getHolder().getSurface());
         }
     }
@@ -277,7 +280,10 @@ public class ReactExoplayerView extends AspectRatioFrameLayout implements
     public void destroyAndClearListeners() {
         Log.d(TAG, "destroyAndClearListeners");
         themedReactContext.removeLifecycleEventListener(this);
-        audioCapabilitiesReceiver.unregister();
+        if (audioCapabilitiesReceiver != null) {
+            audioCapabilitiesReceiver.unregister();
+            audioCapabilitiesReceiver = null;
+        }
         releasePlayer();
 
         if (surfaceView != null) {

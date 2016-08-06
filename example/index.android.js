@@ -15,6 +15,8 @@ import {
 
 import Video from 'react-native-video';
 
+console.disableYellowBox = true;
+
 class VideoPlayer extends React.Component {
 
   state = {
@@ -85,23 +87,22 @@ class VideoPlayer extends React.Component {
     return (
       <View style={styles.container}>
         <View style={styles.fullScreen}>
-          <Video
-            source={{ uri: 'https://d2jyv85kc4p0re.cloudfront.net/FjJloAz9R1mv5A7J4VszBg/303900.mpd' }}
-            style={styles.fullScreen}
-            rate={this.state.rate}
-            paused={this.state.paused}
-            volume={this.state.volume}
-            muted={this.state.muted}
-            resizeMode={this.state.resizeMode}
-            onLoad={this.onLoad}
-            onProgress={this.onProgress}
-            onEnd={() => console.log('Done!')}
-            repeat
-          />
           <TouchableOpacity
             style={styles.touchOverlay}
             onPress={() => this.setState({ paused: !this.state.paused })}
-          />
+          >
+            <Video
+              source={{ uri: 'https://d2jyv85kc4p0re.cloudfront.net/01fee1ff-6889-4c2d-bb40-ffe6a93a5285/manifest.mpd' }}
+              style={styles.fullScreen}
+              rate={this.state.rate}
+              paused={this.state.paused}
+              resizeMode={this.state.resizeMode}
+              onLoad={this.onLoad}
+              onProgress={this.onProgress}
+              onEnd={() => console.log('Done!')}
+              repeat
+            />
+          </TouchableOpacity>
         </View>
 
         <View style={styles.controls}>
@@ -145,14 +146,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'black',
+    backgroundColor: 'red',
   },
   fullScreen: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
+    width: 400,
+    height: 400
   },
   touchOverlay: {
     flex: 1,
@@ -187,11 +185,6 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   rateControl: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'center',
-  },
-  volumeControl: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
