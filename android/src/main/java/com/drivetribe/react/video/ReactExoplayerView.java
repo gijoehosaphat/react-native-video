@@ -4,6 +4,9 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Message;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -23,6 +26,7 @@ import com.drivetribe.exoplayer.player.Player;
 import com.drivetribe.exoplayer.player.SmoothStreamingRendererBuilder;
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.uimanager.ThemedReactContext;
+import com.facebook.react.uimanager.events.RCTEventEmitter;
 import com.google.android.exoplayer.ExoPlaybackException;
 import com.google.android.exoplayer.ExoPlayer;
 import com.google.android.exoplayer.MediaCodecTrackRenderer;
@@ -55,31 +59,8 @@ public class ReactExoplayerView extends AspectRatioFrameLayout implements
         Player.CaptionListener,
         Player.Id3MetadataListener {
 
+    private static final int SHOW_PROGRESS = 1;
     private static final String TAG = "REPVM";
-
-    public enum Events {
-        EVENT_LOAD_START("onVideoLoadStart"),
-        EVENT_LOAD("onVideoLoad"),
-        EVENT_ERROR("onVideoError"),
-        EVENT_PROGRESS("onVideoProgress"),
-        EVENT_SEEK("onVideoSeek"),
-        EVENT_END("onVideoEnd"),
-        EVENT_STALLED("onPlaybackStalled"),
-        EVENT_RESUME("onPlaybackResume"),
-        EVENT_READY_FOR_DISPLAY("onReadyForDisplay");
-
-        private final String mName;
-
-        Events(final String name) {
-            mName = name;
-        }
-
-        @Override
-        public String toString() {
-            return mName;
-        }
-
-    }
 
     private static final CookieManager defaultCookieManager;
 
@@ -109,6 +90,7 @@ public class ReactExoplayerView extends AspectRatioFrameLayout implements
     private boolean repeat;
 
     private AudioCapabilitiesReceiver audioCapabilitiesReceiver;
+    private VideoEventEmitter eventEmmiter;
 
     public ReactExoplayerView(ThemedReactContext themedReactContext) {
         super(themedReactContext);
@@ -142,17 +124,36 @@ public class ReactExoplayerView extends AspectRatioFrameLayout implements
 
         audioCapabilitiesReceiver = new AudioCapabilitiesReceiver(getContext(), this);
         audioCapabilitiesReceiver.register();
+
+        eventEmmiter = new VideoEventEmitter(getId(), themedReactContext);
     }
+
+    private final Handler progressHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case SHOW_PROGRESS:
+                    if (player != null && player.getPlaybackState() == Player.STATE_READY) {
+                        long pos = player.getCurrentPosition();
+                        eventEmmiter.onProgressChanged(pos, player.getBufferedPercentage());
+                        msg = obtainMessage(SHOW_PROGRESS);
+                        sendMessageDelayed(msg, 1000 - (pos % 1000));
+                    }
+                    break;
+            }
+        }
+    };
 
     // Public methods
 
-    public void setSrc(Uri contentUri) {
-        if (contentUri != null) {
-            this.contentUri = contentUri;
-            this.contentType = inferContentType(contentUri, "");
-            Log.d(TAG, "set src " + contentUri.toString() + " type: " + contentType);
-            preparePlayer(true);
-        }
+    public void setSrc(@NonNull Uri contentUri) {
+        this.contentUri = contentUri;
+        this.contentType = inferContentType(contentUri, "");
+        Log.d(TAG, "set src " + contentUri.toString() + " type: " + contentType);
+
+        eventEmmiter.loadStart();
+
+        preparePlayer(true);
     }
 
     public void setResizeModeModifier(boolean repeat) {
@@ -186,6 +187,7 @@ public class ReactExoplayerView extends AspectRatioFrameLayout implements
 
     public void seekTo(long positionMs) {
         if (player != null) {
+            eventEmmiter.seek(player.getCurrentPosition(), positionMs);
             player.seekTo(positionMs);
         }
     }
@@ -341,6 +343,7 @@ public class ReactExoplayerView extends AspectRatioFrameLayout implements
             player.addListener(eventLogger);
             player.setInfoListener(eventLogger);
             player.setInternalErrorListener(eventLogger);
+
         }
         if (playerNeedsPrepare) {
             player.prepare();
@@ -348,6 +351,15 @@ public class ReactExoplayerView extends AspectRatioFrameLayout implements
         }
         player.setSurface(surfaceView.getHolder().getSurface());
         player.setPlayWhenReady(playWhenReady);
+    }
+
+    private void playerReady() {
+        // TODO: is this the height and width?
+        eventEmmiter.ready(player.getDuration(), player.getCurrentPosition());
+        progressHandler.sendEmptyMessage(SHOW_PROGRESS);
+
+        requestLayout();
+        setAspectRatio(surfaceView.getHeight() == 0 ? 1 : (surfaceView.getWidth() * 1.0f) / surfaceView.getHeight());
     }
 
     private void releasePlayer() {
@@ -358,6 +370,7 @@ public class ReactExoplayerView extends AspectRatioFrameLayout implements
             eventLogger.endSession();
             eventLogger = null;
         }
+        progressHandler.removeMessages(SHOW_PROGRESS);
     }
 
     @Override
@@ -366,18 +379,23 @@ public class ReactExoplayerView extends AspectRatioFrameLayout implements
         switch (playbackState) {
             case ExoPlayer.STATE_BUFFERING:
                 text += "buffering";
+                eventEmmiter.buffering();
                 break;
             case ExoPlayer.STATE_ENDED:
                 text += "ended";
+                eventEmmiter.end();
                 break;
             case ExoPlayer.STATE_IDLE:
                 text += "idle";
+                eventEmmiter.idle();
                 break;
             case ExoPlayer.STATE_PREPARING:
                 text += "preparing";
+                eventEmmiter.preparing();
                 break;
             case ExoPlayer.STATE_READY:
                 text += "ready";
+                playerReady();
                 break;
             default:
                 text += "unknown";
@@ -415,18 +433,17 @@ public class ReactExoplayerView extends AspectRatioFrameLayout implements
                         decoderInitializationException.decoderName);
             }
         }
-        if (errorString != null) {
-            Toast.makeText(getContext(), errorString, Toast.LENGTH_LONG).show();
-        }
+        eventEmmiter.error(errorString, e);
+
         playerNeedsPrepare = true;
     }
 
     @Override
-    public void onVideoSizeChanged(int width, int height, int unappliedRotationDegrees,
-                                   float pixelWidthAspectRatio) {
+    public void onVideoSizeChanged(int width, int height, int unappliedRotationDegrees, float pixelWidthAspectRatio) {
         shutterView.setVisibility(View.GONE);
-        this.setAspectRatio(
-                height == 0 ? 1 : (width * pixelWidthAspectRatio) / height);
+        this.setAspectRatio(height == 0 ? 1 : (width * pixelWidthAspectRatio) / height);
+
+        eventEmmiter.onVideoSizeChanged(width, height);
     }
 
     // Player.CaptionListener implementation

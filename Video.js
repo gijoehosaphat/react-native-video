@@ -1,6 +1,7 @@
 /**
  * @flow
  */
+
 import React, { PropTypes } from 'react';
 import {
   NativeModules,
@@ -42,12 +43,6 @@ export default class Video extends React.Component {
   _onLoadStart = (event) => {
     if (this.props.onLoadStart) {
       this.props.onLoadStart(event.nativeEvent);
-    }
-  };
-
-  _onLoad = (event) => {
-    if (this.props.onLoad) {
-      this.props.onLoad(event.nativeEvent);
     }
   };
 
@@ -99,9 +94,9 @@ export default class Video extends React.Component {
     }
   };
 
-  _onReadyForDisplay = (event) => {
-    if (this.props.onReadyForDisplay) {
-      this.props.onReadyForDisplay(event.nativeEvent);
+  _onVideoReady = (event) => {
+    if (this.props.onVideoReady) {
+      this.props.onVideoReady(event.nativeEvent);
     }
   };
 
@@ -158,8 +153,8 @@ export default class Video extends React.Component {
         isAsset,
         type: source.type || 'mp4',
       },
-      onVideoLoadStart: this._onLoadStart,
-      onVideoLoad: this._onLoad,
+      onVideoPrepare: this._onLoadStart,
+      onVideoReady: this._onVideoReady,
       onVideoError: this._onError,
       onVideoProgress: this._onProgress,
       onVideoSeek: this._onSeek,
@@ -168,9 +163,6 @@ export default class Video extends React.Component {
       onVideoFullscreenPlayerDidPresent: this._onFullscreenPlayerDidPresent,
       onVideoFullscreenPlayerWillDismiss: this._onFullscreenPlayerWillDismiss,
       onVideoFullscreenPlayerDidDismiss: this._onFullscreenPlayerDidDismiss,
-      onReadyForDisplay: this._onReadyForDisplay,
-      onPlaybackStalled: this._onPlaybackStalled,
-      onPlaybackResume: this._onPlaybackResume,
       onPlaybackRateChange: this._onPlaybackRateChange,
     });
 

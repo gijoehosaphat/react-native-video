@@ -92,7 +92,7 @@ class VideoPlayer extends React.Component {
             onPress={() => this.setState({ paused: !this.state.paused })}
           >
             <Video
-              source={{ uri: 'https://d2jyv85kc4p0re.cloudfront.net/01fee1ff-6889-4c2d-bb40-ffe6a93a5285/manifest.mpd' }}
+              source={{ uri: 'https://d2jyv85kc4p0re.cloudfront.net/77ef581f-c6fb-4788-8b60-ff1cbe55c39e/manifest.mpd' }}
               style={styles.fullScreen}
               rate={this.state.rate}
               paused={this.state.paused}
@@ -149,8 +149,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'red',
   },
   fullScreen: {
-    width: 400,
-    height: 400
+    ...StyleSheet.absoluteFillObject,
   },
   touchOverlay: {
     flex: 1,

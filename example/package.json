@@ -3,15 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "node_modules/react-native/packager/packager.sh",
-    "test": "jest",
-    "flow": "flow",
-    "lint": "eslint *js",
-    "check": "npm run lint && npm run flow check && npm run test"
+    "start": "node_modules/react-native/packager/packager.sh"
   },
   "dependencies": {
     "react": "^15.2.1",
-    "react-native": "^0.30.0",
+    "react-native": "^0.31.0",
     "react-native-video": "../"
   }
 }
