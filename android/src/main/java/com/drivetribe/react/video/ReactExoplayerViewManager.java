@@ -47,9 +47,8 @@ public class ReactExoplayerViewManager extends SimpleViewManager<ReactExoplayerV
     }
 
     @Override
-    @Nullable
-    public Map getExportedCustomDirectEventTypeConstants() {
-        MapBuilder.Builder builder = MapBuilder.builder();
+    public @Nullable Map<String, Object> getExportedCustomDirectEventTypeConstants() {
+        MapBuilder.Builder<String, Object> builder = MapBuilder.builder();
         for (VideoEventEmitter.Events event : VideoEventEmitter.Events.values()) {
             builder.put(event.toString(), MapBuilder.of("registrationName", event.toString()));
         }
@@ -57,16 +56,8 @@ public class ReactExoplayerViewManager extends SimpleViewManager<ReactExoplayerV
     }
 
     @Override
-    @Nullable
-    public Map getExportedViewConstants() {
-//        return MapBuilder.of(
-//                "ScaleNone", '0',
-//                "ScaleToFill", '1',
-//                "ScaleAspectFit", '2',
-//                "ScaleAspectFill", '3'
-//        );
-
-        return MapBuilder.of(
+    public @Nullable Map<String, Object> getExportedViewConstants() {
+        return MapBuilder.<String, Object>of(
                 "ScaleNone", Integer.toString(ScalableType.LEFT_TOP.ordinal()),
                 "ScaleToFill", Integer.toString(ScalableType.FIT_XY.ordinal()),
                 "ScaleAspectFit", Integer.toString(ScalableType.FIT_CENTER.ordinal()),
