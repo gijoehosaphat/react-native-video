@@ -144,12 +144,10 @@ class VideoPlayer extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'red',
+    backgroundColor: 'yellow',
   },
   fullScreen: {
-    ...StyleSheet.absoluteFillObject,
+    flex: 1,
   },
   touchOverlay: {
     flex: 1,
