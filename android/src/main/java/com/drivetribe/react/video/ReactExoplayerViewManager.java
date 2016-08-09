@@ -50,7 +50,7 @@ public class ReactExoplayerViewManager extends SimpleViewManager<ReactExoplayerV
     @Nullable
     public Map getExportedCustomDirectEventTypeConstants() {
         MapBuilder.Builder builder = MapBuilder.builder();
-        for (ReactExoplayerView.Events event : ReactExoplayerView.Events.values()) {
+        for (VideoEventEmitter.Events event : VideoEventEmitter.Events.values()) {
             builder.put(event.toString(), MapBuilder.of("registrationName", event.toString()));
         }
         return builder.build();
