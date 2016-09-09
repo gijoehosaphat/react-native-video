@@ -133,7 +133,9 @@ public class ReactExoplayerView extends AspectRatioFrameLayout implements
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case SHOW_PROGRESS:
-                    if (player != null && player.getPlaybackState() == Player.STATE_READY) {
+                    if (player != null
+                            && player.getPlaybackState() == Player.STATE_READY
+                            && player.getPlayerControl().isPlaying()) {
                         long pos = player.getCurrentPosition();
                         eventEmmiter.onProgressChanged(pos, player.getBufferedPercentage());
                         msg = obtainMessage(SHOW_PROGRESS);
