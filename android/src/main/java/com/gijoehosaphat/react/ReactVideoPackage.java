@@ -1,4 +1,4 @@
-package com.brentvatne.react;
+package com.gijoehosaphat.react;
 
 import android.app.Activity;
 import com.facebook.react.ReactPackage;

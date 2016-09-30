@@ -1,5 +1,5 @@
 {
-  "name": "react-native-video",
+  "name": "react-native-videostream",
   "version": "0.8.0",
   "description": "A <Video /> element for react-native",
   "main": "Video.js",
@@ -10,9 +10,9 @@
     "android/RCTVideo.iml",
     "android/src/main/AndroidManifest.xml",
     "android/src/main/res/values/styles.xml",
-    "android/src/main/java/com/brentvatne/react/ReactVideoPackage.java",
-    "android/src/main/java/com/brentvatne/react/ReactVideoViewManager.java",
-    "android/src/main/java/com/brentvatne/react/ReactVideoView.java",
+    "android/src/main/java/com/gijoehosaphat/react/ReactVideoPackage.java",
+    "android/src/main/java/com/gijoehosaphat/react/ReactVideoViewManager.java",
+    "android/src/main/java/com/gijoehosaphat/react/ReactVideoView.java",
     "RCTVideo.xcodeproj",
     "RCTVideo.h",
     "RCTVideo.m",
@@ -40,7 +40,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git@github.com:brentvatne/react-native-video.git"
+    "url": "git@github.com:gijoehosaphat/react-native-video.git"
   },
   "devDependencies": {
     "jest-cli": "0.2.1",

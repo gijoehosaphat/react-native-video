@@ -1,6 +1,6 @@
-package com.brentvatne.react;
+package com.gijoehosaphat.react;
 
-import com.brentvatne.react.ReactVideoView.Events;
+import com.gijoehosaphat.react.ReactVideoView.Events;
 import com.facebook.react.bridge.Arguments;
 import com.devbrackets.android.exomedia.core.video.scale.ScaleType;
 import com.facebook.react.bridge.ReadableMap;

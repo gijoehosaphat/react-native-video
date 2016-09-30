@@ -1,7 +1,9 @@
 ## react-native-video
 
+This module has been edited so it can be installed NEXT to react-native-video. The intention is to use the streaming capabilities until it can properly be merged in or the original module supports them. Please do not use this in your app, there will be no support!
+
 A `<Video>` component for react-native, as seen in
-[react-native-login](https://github.com/brentvatne/react-native-login)!
+[react-native-login](https://github.com/gijoehosaphat/react-native-login)!
 
 Requires react-native >= 0.19.0
 

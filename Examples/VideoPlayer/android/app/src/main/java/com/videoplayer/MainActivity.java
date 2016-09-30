@@ -1,7 +1,7 @@
 package com.videoplayer;
 
 import com.facebook.react.ReactActivity;
-import com.brentvatne.react.ReactVideoPackage;
+import com.gijoehosaphat.react.ReactVideoPackage;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 
